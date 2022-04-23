@@ -1,3 +1,4 @@
+import isFilled from '../Helpers/is_filled.js';
 import tweets_list from '../Models/tweets_list.js';
 import users_login from '../Models/users_login.js';
 
@@ -18,17 +19,26 @@ const getTweets = (n) => {
     });
 }
 
+const postTweet = (req, res) => {
+    const {body} = req;
+    const {username, tweet} = body;
+
+    if(isFilled(username) && isFilled(tweet)){
+        const userTweet = {username, tweet};
+        tweets_list.push(userTweet);
+        res.send('ok');
+
+    } else {
+        res.status(400).send('Todos os campos são obrigatórios');
+    }
+}
+
 const tweets = {
     get: (res) => {
         res.send(getTweets(10));
     },
     post: (req, res) => {
-        const {body} = req;
-        const {username, tweet} = body;
-        const userTweet = {username, tweet};
-        tweets_list.push(userTweet);
-
-        res.send('ok');
+        postTweet(req, res);
     }
 }
 

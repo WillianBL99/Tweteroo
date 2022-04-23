@@ -1,15 +1,13 @@
 import users_login from '../Models/users_login.js';
+import isFilled from '../Helpers/is_filled.js';
 
 const validateName = (name) => {
-    const isEmpty = name === "";
-    const isNull = name === null;
     const isString = typeof(name) === 'string';
-
-    return !isEmpty && !isNull && isString;
+    return isFilled(name) && isString;
 }
 
 const validateAvatar = (avatar) => {
-    return avatar?true:false;
+    return isFilled(avatar);
 }
 
 const sing_up = (req, res) => {
