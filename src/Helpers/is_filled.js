@@ -1,5 +1,7 @@
 const isFilled = (value) => {
-    return value?true:false;
+    return value === undefined || value === ''
+    ?false
+    :true;
 }
 
 export default isFilled;

@@ -8,15 +8,29 @@ const getUserAvatar = (username) => {
     );
 }
 
-const getTweets = (n) => {
-    const tweetsToSend = tweets_list.slice(tweets.length - n);
-    
-    return tweetsToSend.map(tweetToSend => {
-        const {username, tweet} = tweetToSend;
-        const {avatar} = getUserAvatar(username);
+const getTweets = (page) => {
+    if(isFilled(page)){
+        if(page >= 1){
+            const qtdMessages = 10;
+            const fim = page * qtdMessages;
+            const inicio = fim - qtdMessages;
 
-        return {username, avatar, tweet};
-    });
+            const tweetsToSend = tweets_list.slice(inicio, fim);
+            
+            return tweetsToSend.map(tweetToSend => {
+                const {username, tweet} = tweetToSend;
+                const {avatar} = getUserAvatar(username);
+        
+                return {username, avatar, tweet};
+            });
+
+        } else {
+            res.status(400).send('Informe uma página válida!');
+        }
+
+    } else {
+        res.status(400).send('O campo ?page deve conter algum valor');
+    }
 }
 
 const getUsernameTweets = (username, res) => {
@@ -31,7 +45,7 @@ const postTweet = (req, res) => {
 
     if(isFilled(username) && isFilled(tweet)){
         const userTweet = {username, tweet};
-        tweets_list.push(userTweet);
+        tweets_list.unshift(userTweet);
         res.status(201).send('ok');
 
     } else {
@@ -40,13 +54,15 @@ const postTweet = (req, res) => {
 }
 
 const tweets = {
-    get: (res) => {
-        res.send(getTweets(10));
+    get: (req, res) => {
+        const {page} = req.query;
+        res.send(getTweets(page));
     },
     post: (req, res) => {
         postTweet(req, res);
     },
-    getUserMessage: (username, res) => {
+    getUserMessage: (req, res) => {
+        const {username} = req.params;
         getUsernameTweets(username, res);
     }
 }
