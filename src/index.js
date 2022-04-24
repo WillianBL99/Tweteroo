@@ -25,3 +25,9 @@ app.post('/tweets', (req, res) => {
 app.get('/tweets', (req, res) => {
     tweets.get(res);
 });
+
+app.get('/tweets/:username', (req, res) => {
+    const {username} = req.params;
+    console.log(username);
+    tweets.getUserMessage(username, res);
+});

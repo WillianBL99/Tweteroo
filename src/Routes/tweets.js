@@ -19,6 +19,12 @@ const getTweets = (n) => {
     });
 }
 
+const getUsernameTweets = (username, res) => {
+    res.send(
+        tweets_list.filter(tweet => tweet.username === username)
+    );
+}
+
 const postTweet = (req, res) => {
     const {body} = req;
     const {username, tweet} = body;
@@ -26,7 +32,7 @@ const postTweet = (req, res) => {
     if(isFilled(username) && isFilled(tweet)){
         const userTweet = {username, tweet};
         tweets_list.push(userTweet);
-        res.send('ok');
+        res.status(201).send('ok');
 
     } else {
         res.status(400).send('Todos os campos são obrigatórios');
@@ -39,6 +45,9 @@ const tweets = {
     },
     post: (req, res) => {
         postTweet(req, res);
+    },
+    getUserMessage: (username, res) => {
+        getUsernameTweets(username, res);
     }
 }
 

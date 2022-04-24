@@ -18,7 +18,7 @@ const sing_up = (req, res) => {
         const login = {username, avatar};
         users_login.push(login);
             
-        res.send('ok');
+        res.status(201).send('ok');
 
     } else {
         res.status(400).send('Todos os campos são obrigatórios');
