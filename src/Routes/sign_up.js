@@ -1,6 +1,5 @@
-import users_login from '../Models/users_login.js';
+import usersLogin from '../Models/users_login.js';
 import isFilled from '../Helpers/is_filled.js';
-import tweets_list from '../Models/tweets_list.js';
 
 const validateName = (name) => {
     const isString = typeof(name) === 'string';
@@ -17,12 +16,13 @@ const sing_up = (req, res) => {
 
     if(validateAvatar(avatar) && validateName(username)){
         const login = {username, avatar};
-        users_login.push(login);
+        usersLogin.push(login);
             
         res.status(201).send('ok');
 
     } else {
         res.status(400).send('Todos os campos são obrigatórios');
+        if(res.headersSent) res.send('Problema no header');
     }
 }
 

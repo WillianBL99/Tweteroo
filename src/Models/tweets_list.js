@@ -1,3 +1,3 @@
-const tweets_list = [];
+const tweetsList = [];
 
-export default tweets_list;
+export default tweetsList;

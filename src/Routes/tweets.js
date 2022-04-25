@@ -1,5 +1,5 @@
 import isFilled from '../Helpers/is_filled.js';
-import tweets_list from '../Models/tweets_list.js';
+import tweetsList from '../Models/tweets_list.js';
 import users_login from '../Models/users_login.js';
 
 const getUserAvatar = (username) => {
@@ -8,44 +8,42 @@ const getUserAvatar = (username) => {
     );
 }
 
-const getTweets = (page) => {
-    if(isFilled(page)){
-        if(page >= 1){
-            const qtdMessages = 10;
-            const fim = page * qtdMessages;
-            const inicio = fim - qtdMessages;
+const getTweets = (res, page) => {
+    if(isFilled(page) && page >= 1){
+        const qtdMessages = 10;
+        const fim = page * qtdMessages;
+        const inicio = fim - qtdMessages;
 
-            const tweetsToSend = tweets_list.slice(inicio, fim);
-            
-            return tweetsToSend.map(tweetToSend => {
-                const {username, tweet} = tweetToSend;
-                const {avatar} = getUserAvatar(username);
+        const tweetsToSend = tweetsList.slice(inicio, fim);
         
-                return {username, avatar, tweet};
-            });
-
-        } else {
-            res.status(400).send('Informe uma página válida!');
-        }
+        return tweetsToSend.map(tweetToSend => {
+            const {username, tweet} = tweetToSend;
+            console.log(tweetToSend, username)
+            const {avatar} = getUserAvatar(username);
+    
+            return {username, avatar, tweet};
+        });
 
     } else {
-        res.status(400).send('O campo ?page deve conter algum valor');
+        res.status(400).send('Informe uma página válida!');
     }
 }
 
 const getUsernameTweets = (username, res) => {
     res.send(
-        tweets_list.filter(tweet => tweet.username === username)
+        tweetsList.filter(tweet => tweet.username === username)
     );
 }
 
 const postTweet = (req, res) => {
+    const username = req.header('User');
+    
     const {body} = req;
-    const {username, tweet} = body;
+    const {tweet} = body;
 
     if(isFilled(username) && isFilled(tweet)){
         const userTweet = {username, tweet};
-        tweets_list.unshift(userTweet);
+        tweetsList.unshift(userTweet);
         res.status(201).send('ok');
 
     } else {
@@ -56,15 +54,13 @@ const postTweet = (req, res) => {
 const tweets = {
     get: (req, res) => {
         const {page} = req.query;
-        res.send(getTweets(page));
+        res.send(getTweets(res, page));
     },
-    post: (req, res) => {
-        postTweet(req, res);
-    },
+    post: postTweet,
     getUserMessage: (req, res) => {
         const {username} = req.params;
         getUsernameTweets(username, res);
     }
 }
 
-export default tweets;
+export default tweets; 
