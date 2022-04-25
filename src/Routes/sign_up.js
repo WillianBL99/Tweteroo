@@ -1,28 +1,27 @@
 import usersLogin from '../Models/users_login.js';
-import isFilled from '../Helpers/is_filled.js';
 
 const validateName = (name) => {
-    const isString = typeof(name) === 'string';
-    return isFilled(name) && isString;
-}
+    const includeUser = usersLogin.includes(
+        user => user.username === name
+    );
 
-const validateAvatar = (avatar) => {
-    return isFilled(avatar);
+    return !includeUser;
 }
 
 const sing_up = (req, res) => {
-    const {body} = req;
-    const {username, avatar} = body;
+    const {username, avatar} = req.body;
 
-    if(validateAvatar(avatar) && validateName(username)){
+    if(!username || !avatar){
+        res.status(400).send('Todos os campos são obrigatórios');
+
+    } else if(!validateName(username)){
+        res.status(403).send('Usuário já cadastrado');
+
+    } else {
         const login = {username, avatar};
         usersLogin.push(login);
             
         res.status(201).send('ok');
-
-    } else {
-        res.status(400).send('Todos os campos são obrigatórios');
-        if(res.headersSent) res.send('Problema no header');
     }
 }
 
